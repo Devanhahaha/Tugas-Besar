@@ -3,10 +3,31 @@ import 'package:intl/intl.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+DateTime? parseDeadline(String deadlineText) {
+  final formats = [
+    // DateFormat("dd MMM yyyy - HH:mm", 'id'),
+    // DateFormat("dd MMM yyyy H:mm", 'id'),
+    // DateFormat("dd-MM-yyyy HH:mm"),
+    // DateFormat("dd/MM/yyyy HH:mm"),
+    DateFormat("dd MMM yyyy – HH:mm"),
+  ];
+
+  for (var format in formats) {
+    try {
+      return format.parse(deadlineText);
+    } catch (_) {}
+  }
+
+  return null; // jika gagal semua
+}
 
 class AddEditTaskScreen extends StatefulWidget {
-  final Task? task; // jika null maka mode tambah, jika ada maka edit
-  const AddEditTaskScreen({super.key, this.task});
+  final Task? task;
+  final Map<String, String>? scannedText; // Ubah ke Map
+
+  const AddEditTaskScreen({super.key, this.task, this.scannedText});
 
   @override
   State<AddEditTaskScreen> createState() => _AddEditTaskScreenState();
@@ -24,12 +45,24 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   @override
   void initState() {
     super.initState();
-    if (isEdit) {
-      final task = widget.task!;
-      _titleController.text = task.tugas;
-      _courseController.text = task.matakuliah;
-      _notesController.text = task.notes;
-      _selectedDateTime = task.deadline;
+    initializeDateFormatting('id', null); // Tambahkan ini
+
+    if (widget.task != null) {
+      // Edit task
+      _titleController.text = widget.task!.tugas;
+      _courseController.text = widget.task!.matakuliah;
+      _notesController.text = widget.task!.notes ?? '';
+      _selectedDateTime = widget.task!.deadline;
+    } else if (widget.scannedText != null) {
+      // Isi otomatis dari hasil OCR
+      final data = widget.scannedText!;
+      _titleController.text = data['namaTugas'] ?? '';
+      _courseController.text = data['mataKuliah'] ?? '';
+      _notesController.text = data['catatan'] ?? '';
+
+      if (data['deadline'] != null) {
+        _selectedDateTime = parseDeadline(data['deadline']!);
+      }
     }
   }
 
@@ -90,7 +123,10 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
         );
       }
 
-      if (context.mounted) Navigator.pop(context);
+      // Balik langsung ke halaman Home
+      if (context.mounted) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
     }
   }
 
@@ -98,7 +134,10 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
     if (isEdit && widget.task?.id != null) {
       await NotificationService.cancelTaskNotifications(widget.task!.id!);
       await LocalDB.instance.deleteTask(widget.task!.id!);
-      if (context.mounted) Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.popUntil(
+            context, (route) => route.isFirst); // Langsung balik ke Home
+      }
     }
   }
 

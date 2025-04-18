@@ -38,6 +38,8 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   timezone: ^0.9.2
   permission_handler: ^11.0.1
+  google_mlkit_text_recognition: ^0.10.0
+  image_picker: ^1.0.7
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -96,3 +98,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+dependency_overrides:
+  google_mlkit_commons:
+    git:
+      url: https://github.com/bharat-biradar/Google-Ml-Kit-plugin.git
+      path: packages/google_mlkit_commons
+  google_mlkit_text_recognition:
+    git:
+      url: https://github.com/bharat-biradar/Google-Ml-Kit-plugin.git
+      path: packages/google_mlkit_text_recognition

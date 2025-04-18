@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:tugas_besar_mobile2/screens/home_screen.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService.initialize();
+
+  try {
+    await NotificationService.initialize();
+    await initializeDateFormatting('id', null);
+  } catch (e, stack) {
+    print("ERROR saat inisialisasi: $e");
+    print(stack);
+  }
+
   runApp(const MyApp());
 }
 

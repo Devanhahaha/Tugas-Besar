@@ -25,8 +25,6 @@ class NotificationService {
     await Permission.notification.request();
   }
 }
-
-
   static Future<void> scheduleTaskReminder({
     required int id,
     required String tugas,

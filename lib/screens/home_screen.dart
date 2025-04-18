@@ -4,6 +4,7 @@ import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
 import 'package:tugas_besar_mobile2/screens/calender_screen.dart';
 import 'package:tugas_besar_mobile2/screens/complete_tasks_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:tugas_besar_mobile2/screens/scan_task_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -90,6 +91,18 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.document_scanner),
+            tooltip: 'Scan Gambar',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ScanTaskScreen()),
+              ).then((value) {
+                if (value == true) _loadTasks();
+              });
+            },
+          ),
         ],
       ),
       body: Padding(
@@ -134,8 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     isExpanded: true,
                     value: selectedStatus,
                     items: const [
-                      DropdownMenuItem(value: 'Belum selesai', child: Text('Belum selesai')),
-                      DropdownMenuItem(value: 'Selesai', child: Text('Selesai')),
+                      DropdownMenuItem(
+                          value: 'Belum selesai', child: Text('Belum selesai')),
+                      DropdownMenuItem(
+                          value: 'Selesai', child: Text('Selesai')),
                       DropdownMenuItem(value: 'Semua', child: Text('Semua')),
                     ],
                     onChanged: (val) {
@@ -144,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(sortAsc ? Icons.arrow_upward : Icons.arrow_downward),
+                  icon:
+                      Icon(sortAsc ? Icons.arrow_upward : Icons.arrow_downward),
                   tooltip: 'Urutkan deadline',
                   onPressed: () => setState(() => sortAsc = !sortAsc),
                 )
@@ -152,105 +168,119 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
-              child: filteredTasks.isEmpty
-                  ? Center(
-                      child: Text(
-                        'Tidak ada tugas ditemukan 🎉',
-                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredTasks.length,
-                      itemBuilder: (context, index) {
-                        final task = filteredTasks[index];
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          color: Colors.white,
-                          shadowColor: Colors.indigo.withOpacity(0.2),
-                          elevation: 5,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => AddEditTaskScreen(task: task),
-                                  ),
-                                );
-                                _loadTasks();
-                              },
-                              title: Text(
-                                task.tugas,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    task.matakuliah,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.calendar_today,
-                                          size: 14, color: Colors.indigo),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'Deadline: ${DateFormat('dd MMM yyyy – HH:mm').format(task.deadline)}',
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  task.isDone
-                                      ? Icons.check_circle
-                                      : Icons.radio_button_unchecked,
-                                  color: Colors.indigo,
-                                ),
-                                onPressed: () async {
-                                  final updatedTask = Task(
-                                    id: task.id,
-                                    tugas: task.tugas,
-                                    matakuliah: task.matakuliah,
-                                    deadline: task.deadline,
-                                    notes: task.notes,
-                                    isDone: !task.isDone,
-                                  );
-                                  await LocalDB.instance.updateTask(updatedTask);
-                                  _loadTasks();
-                                },
+              child: RefreshIndicator(
+                onRefresh: _loadTasks,
+                child: filteredTasks.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: Center(
+                              child: Text(
+                                'Tidak ada tugas ditemukan 🎉',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.grey[600]),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ],
+                      )
+                    : ListView.builder(
+                        itemCount: filteredTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = filteredTasks[index];
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            color: Colors.white,
+                            shadowColor: Colors.indigo.withOpacity(0.2),
+                            elevation: 5,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          AddEditTaskScreen(task: task),
+                                    ),
+                                  );
+                                  _loadTasks();
+                                },
+                                title: Text(
+                                  task.tugas,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      task.matakuliah,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.calendar_today,
+                                            size: 14, color: Colors.indigo),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Deadline: ${DateFormat('dd MMM yyyy – HH:mm').format(task.deadline)}',
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                trailing: IconButton(
+                                  icon: Icon(
+                                    task.isDone
+                                        ? Icons.check_circle
+                                        : Icons.radio_button_unchecked,
+                                    color: Colors.indigo,
+                                  ),
+                                  onPressed: () async {
+                                    final updatedTask = Task(
+                                      id: task.id,
+                                      tugas: task.tugas,
+                                      matakuliah: task.matakuliah,
+                                      deadline: task.deadline,
+                                      notes: task.notes,
+                                      isDone: !task.isDone,
+                                    );
+                                    await LocalDB.instance
+                                        .updateTask(updatedTask);
+                                    _loadTasks();
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.push(
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AddEditTaskScreen()),
           );
-          _loadTasks();
+          if (result == true) _loadTasks();
         },
         backgroundColor: Colors.indigo,
         icon: const Icon(Icons.add),

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tugas_besar_mobile2"
+    namespace 'com.example.tugas_besar_mobile2'
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
