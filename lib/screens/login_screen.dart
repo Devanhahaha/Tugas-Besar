@@ -7,10 +7,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    void _showModalFormRegister () {
+    void _showModalFormRegister() {
       showModalBottomSheet(
-        context: context, 
+        context: context,
         isScrollControlled: true,
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -21,17 +20,22 @@ class LoginScreen extends StatelessWidget {
         ),
         builder: (context) {
           double heighFactor = 0.5;
-
           if (MediaQuery.of(context).viewInsets.bottom > 0) {
             heighFactor = 0.8;
           }
-
           return FractionallySizedBox(
             heightFactor: heighFactor,
-            child: RegisterformScreen(),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: RegisterformScreen(),
+              ),
+            ),
           );
-        }
-        );
+        },
+      );
     }
 
     void _showModalFormLogin() {
@@ -41,23 +45,27 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20), 
-            topRight: Radius.circular(20)
-            ),
-            ),
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
         builder: (context) {
           double heighFactor = 0.5;
-
           if (MediaQuery.of(context).viewInsets.bottom > 0) {
             heighFactor = 0.7;
           }
-
           return FractionallySizedBox(
             heightFactor: heighFactor,
-            child: LoginformScreen(), 
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: LoginformScreen(),
+              ),
+            ),
           );
-        }
-        
+        },
       );
     }
 
@@ -71,96 +79,109 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          Column(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Stack(
             children: [
-              ClipPath(
-                clipper: ClipPathClass(),
-                child: Container(
-                  height: 360,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.blue,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 200),
-                child: Card(
-                  color: Colors.blue,
-                  elevation: 4,
-                  margin: EdgeInsets.only(right: 20, left: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => _showModalFormLogin(),
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child:
-                                    Icon(Icons.person, color: Colors.lightBlue),
-                              ),
-                              SizedBox(width: 8),
-                              Center(
-                                  child: Text('Login',
-                                      style:
-                                          TextStyle(color: Colors.lightBlue))),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () => _showModalFormRegister(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Icon(
-                                  Icons.app_registration,
-                                  color: Colors.lightBlue,
+              Column(
+                children: [
+                  ClipPath(
+                    clipper: ClipPathClass(),
+                    child: Container(
+                      height: 360,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 200),
+                    child: Card(
+                      color: Colors.blue,
+                      elevation: 4,
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () => _showModalFormLogin(),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Center(
-                                child: Text('Register',
-                                    style: TextStyle(color: Colors.lightBlue)),
-                              )
-                            ],
-                          ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(Icons.person,
+                                        color: Colors.lightBlue),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Login',
+                                      style: TextStyle(color: Colors.lightBlue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () => _showModalFormRegister(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.app_registration,
+                                      color: Colors.lightBlue,
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Register',
+                                      style: TextStyle(color: Colors.lightBlue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/mahasiswa.png',
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
             ],
           ),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Image.asset('assets/images/mahasiswa.png',
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.contain),
-              ))
-        ],
+        ),
       ),
     );
   }
@@ -175,7 +196,6 @@ class ClipPathClass extends CustomClipper<Path> {
         size.width / 2, size.height, size.width, size.height - 60);
     path.lineTo(size.width, 0);
     path.close();
-
     return path;
   }
 

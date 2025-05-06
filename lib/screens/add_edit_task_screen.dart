@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
+import 'package:tugas_besar_mobile2/screens/home_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -125,21 +126,29 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
 
       // Balik langsung ke halaman Home
       if (context.mounted) {
-        Navigator.popUntil(context, (route) => route.isFirst);
+        Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false, // Hapus semua rute sebelumnya
+      );
       }
     }
   }
 
   Future<void> _deleteTask() async {
-    if (isEdit && widget.task?.id != null) {
-      await NotificationService.cancelTaskNotifications(widget.task!.id!);
-      await LocalDB.instance.deleteTask(widget.task!.id!);
-      if (context.mounted) {
-        Navigator.popUntil(
-            context, (route) => route.isFirst); // Langsung balik ke Home
-      }
+  if (isEdit && widget.task?.id != null) {
+    await NotificationService.cancelTaskNotifications(widget.task!.id!);
+    await LocalDB.instance.deleteTask(widget.task!.id!);
+    if (context.mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false, // Hapus semua rute sebelumnya
+      );
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
