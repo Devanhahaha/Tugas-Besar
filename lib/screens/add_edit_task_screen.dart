@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/screens/home_screen.dart';
+import 'package:tugas_besar_mobile2/screens/live_scan_task_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -127,34 +128,33 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
       // Balik langsung ke halaman Home
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false, // Hapus semua rute sebelumnya
-      );
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false, // Hapus semua rute sebelumnya
+        );
       }
     }
   }
 
   Future<void> _deleteTask() async {
-  if (isEdit && widget.task?.id != null) {
-    await NotificationService.cancelTaskNotifications(widget.task!.id!);
-    await LocalDB.instance.deleteTask(widget.task!.id!);
-    if (context.mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false, // Hapus semua rute sebelumnya
-      );
+    if (isEdit && widget.task?.id != null) {
+      await NotificationService.cancelTaskNotifications(widget.task!.id!);
+      await LocalDB.instance.deleteTask(widget.task!.id!);
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false, // Hapus semua rute sebelumnya
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? 'Edit Tugas' : 'Tambah Tugas'),
+        title: Text(isEdit ? 'Edit Tugas' : 'Tambah Tugas', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
         actions: isEdit
             ? [
@@ -221,11 +221,22 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
                       borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(isEdit ? 'Perbarui Tugas' : 'Simpan Tugas'),
+                child: Text(isEdit ? 'Perbarui Tugas' : 'Simpan Tugas', style: TextStyle(color: Colors.white)),
               )
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const LiveScanTaskScreen()),
+          );
+        },
+        label: const Text('Scan Tugas', style: TextStyle(fontSize: 16)),
+        icon: const Icon(Icons.document_scanner),
+        backgroundColor: Colors.indigo,
       ),
     );
   }
