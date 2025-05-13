@@ -72,12 +72,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Student Task Manager'),
+        title: const Text('Student Task Manager', style:  TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.indigo,
         actions: [
           IconButton(
             icon: const Icon(Icons.history),
+            color: Colors.white,
             onPressed: () {
               Navigator.push(
                 context,
@@ -106,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // ),
           IconButton(
             icon: const Icon(Icons.calendar_month),
+            color: Colors.white,
             onPressed: () {
               Navigator.push(
                 context,
@@ -115,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.document_scanner),
+            color: Colors.white,
             tooltip: 'Scan Gambar',
             onPressed: () {
               Navigator.push(
@@ -305,8 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (result == true) _loadTasks();
         },
         backgroundColor: Colors.indigo,
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Tugas'),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text('Tambah Tugas', style: TextStyle(color: Colors.white)),
       ),
     );
   }

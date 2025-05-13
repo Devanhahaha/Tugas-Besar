@@ -31,7 +31,7 @@ class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Riwayat Tugas'),
+        title: const Text('Riwayat Tugas', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
       ),
       body: Padding(

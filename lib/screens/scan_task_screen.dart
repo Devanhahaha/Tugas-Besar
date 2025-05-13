@@ -70,7 +70,7 @@ class _ScanTaskScreenState extends State<ScanTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan Tugas dari Kamera/Gambar'),
+        title: const Text('Scan Tugas dari Kamera/Gambar', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
       ),
       body: Padding(

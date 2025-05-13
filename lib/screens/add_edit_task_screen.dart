@@ -249,8 +249,8 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
             MaterialPageRoute(builder: (_) => const LiveScanTaskScreen()),
           );
         },
-        label: const Text('Scan Tugas', style: TextStyle(fontSize: 16)),
-        icon: const Icon(Icons.document_scanner),
+        label: const Text('Scan Tugas', style: TextStyle(fontSize: 16, color: Colors.white)),
+        icon: const Icon(Icons.document_scanner, color: Colors.white),
         backgroundColor: Colors.indigo,
       ),
     );
