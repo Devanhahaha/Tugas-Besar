@@ -4,11 +4,15 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:tugas_besar_mobile2/screens/home_screen.dart';
 import 'package:tugas_besar_mobile2/screens/login_screen.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
     await NotificationService.initialize();
     await initializeDateFormatting('id', null);
   } catch (e, stack) {

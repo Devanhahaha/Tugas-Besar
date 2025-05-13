@@ -98,47 +98,60 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   }
 
   Future<void> _saveTask() async {
-    if (_formKey.currentState!.validate() && _selectedDateTime != null) {
-      final task = Task(
-        id: widget.task?.id,
-        tugas: _titleController.text,
-        matakuliah: _courseController.text,
-        deadline: _selectedDateTime!,
-        notes: _notesController.text,
-        isDone: widget.task?.isDone ?? false,
+  if (_formKey.currentState!.validate() && _selectedDateTime != null) {
+    final task = Task(
+      id: widget.task?.id,
+      tugas: _titleController.text,
+      matakuliah: _courseController.text,
+      deadline: _selectedDateTime!,
+      notes: _notesController.text,
+      isDone: widget.task?.isDone ?? false,
+    );
+
+    if (isEdit) {
+      await LocalDB.instance.updateTask(task);
+      await NotificationService.cancelTaskNotifications(task.id!);
+      await NotificationService.scheduleTaskReminder(
+        id: task.id!,
+        tugas: task.tugas,
+        deadline: task.deadline,
       );
+      await NotificationService.scheduleTaskReminderr(
+        id: task.id!,
+        tugas: task.tugas,
+        deadline: task.deadline,
+      );
+    } else {
+      final newId = await LocalDB.instance.insertTask(task);
+      await NotificationService.scheduleTaskReminder(
+        id: newId,
+        tugas: task.tugas,
+        deadline: task.deadline,
+      );
+      await NotificationService.scheduleTaskReminderr(
+        id: newId,
+        tugas: task.tugas,
+        deadline: task.deadline,
+      );
+    }
 
-      if (isEdit) {
-        await LocalDB.instance.updateTask(task);
-        await NotificationService.cancelTaskNotifications(task.id!);
-        await NotificationService.scheduleTaskReminder(
-          id: task.id!,
-          tugas: task.tugas,
-          deadline: task.deadline,
-        );
-      } else {
-        final newId = await LocalDB.instance.insertTask(task);
-        await NotificationService.scheduleTaskReminder(
-          id: newId,
-          tugas: task.tugas,
-          deadline: task.deadline,
-        );
-      }
-
-      // Balik langsung ke halaman Home
-      if (context.mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false, // Hapus semua rute sebelumnya
-        );
-      }
+    // Balik langsung ke halaman Home
+    if (context.mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false,
+      );
     }
   }
+}
+
 
   Future<void> _deleteTask() async {
     if (isEdit && widget.task?.id != null) {
-      await NotificationService.cancelTaskNotifications(widget.task!.id!);
+      // await NotificationService.cancelTaskNotifications(widget.task!.id!);
+      await NotificationService.showInstantNotification(
+          title: 'Dibatalkan', body: 'Silahkan Input Tugas Baru');
       await LocalDB.instance.deleteTask(widget.task!.id!);
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(
@@ -154,7 +167,8 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? 'Edit Tugas' : 'Tambah Tugas', style: TextStyle(color: Colors.white)),
+        title: Text(isEdit ? 'Edit Tugas' : 'Tambah Tugas',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
         actions: isEdit
             ? [
@@ -221,7 +235,8 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
                       borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(isEdit ? 'Perbarui Tugas' : 'Simpan Tugas', style: TextStyle(color: Colors.white)),
+                child: Text(isEdit ? 'Perbarui Tugas' : 'Simpan Tugas',
+                    style: TextStyle(color: Colors.white)),
               )
             ],
           ),

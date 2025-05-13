@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
 import 'package:tugas_besar_mobile2/screens/calender_screen.dart';
@@ -6,6 +8,7 @@ import 'package:tugas_besar_mobile2/screens/complete_tasks_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_mobile2/screens/scan_task_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
+import 'package:tugas_besar_mobile2/utils/notification_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -82,6 +85,25 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          // IconButton(
+          //   icon: const Icon(Icons.notifications),
+          //   onPressed: () async {
+          //     // await NotificationService.showInstantNotification(
+          //     //   title: "Test Notifikasi",
+          //     //   body: "Ini notifikasi instan dari Student Task Manager",
+          //     // );
+          //     await NotificationService.instance.zonedSchedule(
+          //         0,
+          //         'scheduled title',
+          //         'scheduled body',
+          //         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+          //         const NotificationDetails(
+          //             android: AndroidNotificationDetails(
+          //                 'your channel id', 'your channel name',
+          //                 channelDescription: 'your channel description')),
+          //         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+          //   },
+          // ),
           IconButton(
             icon: const Icon(Icons.calendar_month),
             onPressed: () {
