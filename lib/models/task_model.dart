@@ -4,6 +4,7 @@ class Task {
   final String matakuliah;
   final DateTime deadline;
   final String notes;
+  final int user_id;
   final bool isDone;
 
   Task({
@@ -12,6 +13,7 @@ class Task {
     required this.matakuliah,
     required this.deadline,
     required this.notes,
+    required this.user_id,
     this.isDone = false,
   });
 
@@ -23,6 +25,7 @@ class Task {
       'matakuliah': matakuliah,
       'deadline': deadline.toIso8601String(),
       'notes': notes,
+      'user_id': user_id,
       'isDone': isDone ? 1 : 0,
     };
   }
@@ -35,6 +38,7 @@ class Task {
       matakuliah: map['matakuliah'],
       deadline: DateTime.parse(map['deadline']),
       notes: map['notes'],
+      user_id : map['user_id'],
       isDone: map['isDone'] == 1,
     );
   }

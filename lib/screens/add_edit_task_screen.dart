@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
+import 'package:tugas_besar_mobile2/models/user_model.dart';
 import 'package:tugas_besar_mobile2/screens/home_screen.dart';
 import 'package:tugas_besar_mobile2/screens/live_scan_task_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 DateTime? parseDeadline(String deadlineText) {
   final formats = [
@@ -47,6 +49,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUser();
     initializeDateFormatting('id', null); // Tambahkan ini
 
     if (widget.task != null) {
@@ -67,6 +70,19 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
       }
     }
   }
+
+ Users? loggedInUser;
+
+Future<void> _loadUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? userJson = prefs.getString('user_data');
+
+  if (userJson != null) {
+    setState(() {
+      loggedInUser = Users.fromJson(userJson); 
+    });
+  }
+}
 
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
@@ -99,13 +115,17 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
 
   Future<void> _saveTask() async {
   if (_formKey.currentState!.validate() && _selectedDateTime != null) {
+   final userId = widget.task?.user_id ?? loggedInUser?.id ?? 0;
+    print('user : ${userId}');
     final task = Task(
       id: widget.task?.id,
       tugas: _titleController.text,
       matakuliah: _courseController.text,
       deadline: _selectedDateTime!,
       notes: _notesController.text,
+      user_id: userId,
       isDone: widget.task?.isDone ?? false,
+
     );
 
     if (isEdit) {
