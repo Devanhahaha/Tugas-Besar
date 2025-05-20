@@ -53,35 +53,57 @@ class _LiveScanTaskScreenState extends State<LiveScanTaskScreen> {
     });
 
     // Setelah selesai, parsing & arahkan ke OCR preview
-    if (mounted) {
-      Navigator.pushReplacement(
-        this.context,
-        MaterialPageRoute(
-          builder: (_) => OCRPreviewScreen(
-            extractedData: _parseScannedText(_recognizedText),
-          ),
+    final parsed = _parseScannedText(_recognizedText);
+
+    Navigator.pushReplacement(
+      this.context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => OCRPreviewScreen(
+          extractedData: parsed['data'],
+          garbageText: parsed['garbage'],
         ),
-      );
-    }
+      ),
+    );
   }
 
-  Map<String, String> _parseScannedText(String text) {
+  Map<String, dynamic> _parseScannedText(String text) {
     final lines = text.split('\n');
     final result = <String, String>{};
+    final garbageList = <String>[];
+
+    final garbageKeywords = [
+      'jangan telat',
+      'kena denda',
+      'terlambat',
+      'dihukum',
+      'hukumannya',
+      'kalau telat',
+      'telat kena',
+    ];
 
     for (var line in lines) {
-      if (line.toLowerCase().contains('nama')) {
+      final lineLower = line.toLowerCase();
+
+      if (garbageKeywords.any((word) => lineLower.contains(word))) {
+        garbageList.add(line);
+        continue;
+      }
+
+      if (lineLower.contains('nama')) {
         result['namaTugas'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('kuliah')) {
+      } else if (lineLower.contains('kuliah')) {
         result['mataKuliah'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('deadline')) {
+      } else if (lineLower.contains('deadline')) {
         result['deadline'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('catatan')) {
+      } else if (lineLower.contains('catatan')) {
         result['catatan'] = line.split(':').last.trim();
       }
     }
 
-    return result;
+    return {
+      'data': result,
+      'garbage': garbageList,
+    };
   }
 
   @override

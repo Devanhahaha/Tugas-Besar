@@ -3,8 +3,13 @@ import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
 
 class OCRPreviewScreen extends StatelessWidget {
   final Map<String, String> extractedData;
+  final List<String>? garbageText;
 
-  const OCRPreviewScreen({super.key, required this.extractedData});
+  const OCRPreviewScreen({
+    super.key,
+    required this.extractedData,
+    this.garbageText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +30,18 @@ class OCRPreviewScreen extends StatelessWidget {
             Text('Deadline: ${extractedData['deadline'] ?? '-'}'),
             const SizedBox(height: 8),
             Text('Catatan: ${extractedData['catatan'] ?? '-'}'),
+            const SizedBox(height: 16),
+            if (garbageText != null && garbageText!.isNotEmpty) ...[
+              const Divider(),
+              const Text('Teks Tidak Digunakan:',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red)),
+              const SizedBox(height: 4),
+              ...garbageText!.map((line) => Text(
+                    '- $line',
+                    style: const TextStyle(color: Colors.red),
+                  )),
+            ],
             const Spacer(),
             ElevatedButton(
               onPressed: () {
@@ -35,10 +52,7 @@ class OCRPreviewScreen extends StatelessWidget {
                         AddEditTaskScreen(scannedText: extractedData),
                   ),
                 ).then((result) {
-                  if (result == true) {
-                    Navigator.pop(context,
-                        true); // balik ke ScanTaskScreen, lalu ke HomeScreen
-                  }
+                  if (result == true) Navigator.pop(context, true);
                 });
               },
               child: const Text('Gunakan Data Ini'),
