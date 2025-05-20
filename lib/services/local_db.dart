@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/task_model.dart';
+import '../models/user_model.dart';
 
 class LocalDB {
   static final LocalDB instance = LocalDB._init();
@@ -18,6 +19,9 @@ class LocalDB {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
+    // await deleteDatabase(path); 
+
+
     return await openDatabase(
       path,
       version: 1,
@@ -33,9 +37,58 @@ class LocalDB {
         matakuliah TEXT,
         deadline TEXT,
         notes TEXT,
-        isDone INTEGER
+        isDone INTEGER,
+        user_id INT,
+        FOREIGN KEY (user_id) REFERENCES users(id)
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+      )
+    ''');
+  }
+
+  Future<bool> isEmailExist(String email) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+    return result.isNotEmpty;
+  }
+
+  Future<Users?> checkUser(String email, String password) async {
+  final db = await instance.database;
+  final result = await db.query(
+    'users',
+    where: 'email = ? AND password = ?',
+    whereArgs: [email, password],
+  );
+
+  if (result.isNotEmpty) {
+    return Users.fromMap(result.first);
+  } else {
+    return null;
+  }
+}
+
+
+  Future<List<Users>> getAllUsers() async {
+    final  db = await instance.database;
+    final result = await db.query('users');
+    return result.map((map) => Users.fromMap(map)).toList();
+  }
+
+
+  Future<int> insertUsers(Users users) async {
+    final db = await instance.database;
+    return await db.insert('users', users.toMap());
   }
 
   Future<int> insertTask(Task task) async {

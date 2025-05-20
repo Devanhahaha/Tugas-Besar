@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -6,9 +8,11 @@ import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
 import 'package:tugas_besar_mobile2/screens/calender_screen.dart';
 import 'package:tugas_besar_mobile2/screens/complete_tasks_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:tugas_besar_mobile2/screens/login_screen.dart';
 import 'package:tugas_besar_mobile2/screens/scan_task_screen.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 import 'package:tugas_besar_mobile2/utils/notification_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,18 +27,47 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedStatus = 'Belum selesai';
   bool sortAsc = true;
 
-  Future<void> _loadTasks() async {
-    final data = await LocalDB.instance.getAllTasks();
-    setState(() {
-      tasks = data;
-    });
-  }
+  int? userId;
+  String? username;
+
+
+Future<void> _loadTasks() async {
+  final data = await LocalDB.instance.getAllTasks();
+  final filteredByUser = userId == null ? data : data.where((t) => t.user_id == userId).toList();
+  print('Filtered tasks: ${filteredByUser.length}');
+
+  setState(() {
+    tasks = filteredByUser;
+  });
+}
+
 
   @override
   void initState() {
     super.initState();
-    _loadTasks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _loadUser();
+  });
   }
+
+  Future<void> _loadUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  final userJson = prefs.getString('user_data');
+
+  if (userJson != null) {
+    final Map<String, dynamic> userMap = jsonDecode(userJson);
+    print('Loaded user: ${userMap}');
+
+    userId = userMap['id'];
+    username = userMap['username'];
+    await _loadTasks(); // pastikan data sesuai user dimuat
+    setState(() {}); // agar username tampil di UI
+  } else {
+    await _loadTasks();
+    setState(() {});
+  }
+}
+
 
   List<String> getCourses() {
     final allCourses = tasks.map((t) => t.matakuliah).toSet().toList();
@@ -76,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         backgroundColor: Colors.indigo,
         actions: [
+          
           IconButton(
             icon: const Icon(Icons.history),
             color: Colors.white,
@@ -86,6 +120,23 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+
+           IconButton(
+      icon: const Icon(Icons.logout),
+      color: Colors.white,
+      tooltip: 'Logout',
+      onPressed: () async {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('user_data');  // hapus data user dari shared prefs
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,  // hapus semua route sebelumnya
+        );
+      },
+    ),
+
           // IconButton(
           //   icon: const Icon(Icons.notifications),
           //   onPressed: () async {
@@ -136,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Halo, Mahasiswa! 👋',
+             'Halo, ${username?.isNotEmpty == true ? '${username}!' : 'Mahasiswa!'} 👋',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -282,6 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       matakuliah: task.matakuliah,
                                       deadline: task.deadline,
                                       notes: task.notes,
+                                      user_id: task.user_id,
                                       isDone: !task.isDone,
                                     );
                                     await LocalDB.instance
