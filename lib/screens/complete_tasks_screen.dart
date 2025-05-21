@@ -31,7 +31,8 @@ class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Riwayat Tugas', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('Riwayat Tugas', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
       ),
       body: Padding(
@@ -48,9 +49,16 @@ class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
                     elevation: 3,
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
-                      title: Text(task.tugas),
-                      subtitle: Text(
-                          'Deadline: ${DateFormat('dd MMM yyyy').format(task.deadline)}'),
+                      title: Text('Tugas: ${task.tugas}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Mata Kuliah: ${task.matakuliah}'),
+                          Text('Notes: ${task.notes}'),
+                          Text(
+                              'Deadline: ${DateFormat('dd MMM yyyy – HH:mm').format(task.deadline)}'),
+                        ],
+                      ),
                       trailing:
                           const Icon(Icons.check_circle, color: Colors.green),
                     ),
