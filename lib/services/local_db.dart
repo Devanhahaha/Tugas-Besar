@@ -63,6 +63,17 @@ class LocalDB {
     return result.isNotEmpty;
   }
 
+  Future<List<Task>> getTasksByUser(int userId) async {
+  final db = await instance.database;
+  final result = await db.query(
+    'tasks',
+    where: 'user_id = ?',
+    whereArgs: [userId],
+  );
+  return result.map((json) => Task.fromMap(json)).toList();
+}
+
+
   Future<Users?> checkUser(String email, String password) async {
   final db = await instance.database;
   final result = await db.query(
