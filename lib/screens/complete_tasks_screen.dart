@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
 
@@ -12,18 +14,30 @@ class CompletedTasksScreen extends StatefulWidget {
 
 class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
   List<Task> completedTasks = [];
-
-  Future<void> _loadCompletedTasks() async {
-    final allTasks = await LocalDB.instance.getAllTasks();
-    setState(() {
-      completedTasks = allTasks.where((task) => task.isDone).toList();
-    });
-  }
+  int? userId;
 
   @override
   void initState() {
     super.initState();
-    _loadCompletedTasks();
+    _loadUserAndTasks();
+  }
+
+  Future<void> _loadUserAndTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_data');
+
+    if (userJson != null) {
+      final userMap = jsonDecode(userJson);
+      userId = userMap['id'];
+
+      final allTasks = await LocalDB.instance.getAllTasks();
+
+      setState(() {
+        completedTasks = allTasks.where((task) =>
+          task.isDone && task.user_id == userId
+        ).toList();
+      });
+    }
   }
 
   @override
@@ -31,8 +45,7 @@ class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title:
-            const Text('Riwayat Tugas', style: TextStyle(color: Colors.white)),
+        title: const Text('Riwayat Tugas', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.indigo,
       ),
       body: Padding(
@@ -56,11 +69,10 @@ class _CompletedTasksScreenState extends State<CompletedTasksScreen> {
                           Text('Mata Kuliah: ${task.matakuliah}'),
                           Text('Notes: ${task.notes}'),
                           Text(
-                              'Deadline: ${DateFormat('dd MMM yyyy – HH:mm').format(task.deadline)}'),
+                            'Deadline: ${DateFormat('dd MMM yyyy – HH:mm').format(task.deadline)}'),
                         ],
                       ),
-                      trailing:
-                          const Icon(Icons.check_circle, color: Colors.green),
+                      trailing: const Icon(Icons.check_circle, color: Colors.green),
                     ),
                   );
                 },
