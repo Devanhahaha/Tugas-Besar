@@ -1,0 +1,2 @@
+C:/tugasflutter/Tugas-Besar/android/app/.cxx/Debug/5h1s5r41/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/tugasflutter/Tugas-Besar/android/app/.cxx/Debug/5h1s5r41/arm64-v8a/CMakeFiles/rebuild_cache.dir

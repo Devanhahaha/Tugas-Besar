@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "411981962004",
+    "project_id": "tugas-besar-55dd2",
+    "storage_bucket": "tugas-besar-55dd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411981962004:android:5d83c5f6bc20521cc78001",
+        "android_client_info": {
+          "package_name": "com.example.tugas_besar_mobile2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411981962004-9fl3qp0ss3bs73no8jufe1jurhc09ajs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC62l-RD_CnUpMJHhNBCyx6ufNbBwWzEqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411981962004-9fl3qp0ss3bs73no8jufe1jurhc09ajs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411981962004:android:34e19f65817b629dc78001",
+        "android_client_info": {
+          "package_name": "com.rplc.taskmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411981962004-9agj9gc80eoepi4ag5rfma20ollk8n17.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rplc.taskmanager",
+            "certificate_hash": "8016a466da3d2856baa2c1c43466354476b45a2a"
+          }
+        },
+        {
+          "client_id": "411981962004-9fl3qp0ss3bs73no8jufe1jurhc09ajs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC62l-RD_CnUpMJHhNBCyx6ufNbBwWzEqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411981962004-9fl3qp0ss3bs73no8jufe1jurhc09ajs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

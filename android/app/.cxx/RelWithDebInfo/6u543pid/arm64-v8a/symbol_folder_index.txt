@@ -1,0 +1,1 @@
+C:\tugasflutter\Tugas-Besar\build\app\intermediates\cxx\RelWithDebInfo\6u543pid\obj\arm64-v8a
