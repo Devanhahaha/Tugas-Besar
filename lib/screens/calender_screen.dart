@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/services/local_db.dart';
@@ -16,6 +19,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   List<Task> tasks = [];
+  int? userId;
   String selectedCourse = 'Semua';
 
   final Map<int, List<String>> jadwalKuliahPerHari = {
@@ -44,17 +48,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
     ],
   };
 
-  Future<void> _loadTasks() async {
-    final data = await LocalDB.instance.getAllTasks();
-    setState(() {
-      tasks = data;
-    });
+  Future<void> _loadUserAndTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_data');
+
+    if (userJson != null) {
+      final userMap = jsonDecode(userJson);
+      userId = userMap['id'];
+
+      final allTasks = await LocalDB.instance.getAllTasks();
+
+      setState(() {
+        tasks = allTasks.where((task) => task.user_id == userId).toList();
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadTasks();
+    _loadUserAndTasks();
   }
 
   List<dynamic> _getEventsForDay(DateTime day) {
