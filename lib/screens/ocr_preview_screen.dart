@@ -16,7 +16,7 @@ class OCRPreviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Validasi Hasil OCR'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

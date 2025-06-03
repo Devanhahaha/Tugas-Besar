@@ -123,7 +123,7 @@ class _LiveScanTaskScreenState extends State<LiveScanTaskScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Scan Langsung"),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Stack(
         children: [
@@ -147,7 +147,7 @@ class _LiveScanTaskScreenState extends State<LiveScanTaskScreen> {
         onPressed: _captureAndScan,
         icon: const Icon(Icons.camera),
         label: const Text("Scan Sekarang"),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

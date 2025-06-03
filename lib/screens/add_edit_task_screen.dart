@@ -189,7 +189,7 @@ Future<void> _loadUser() async {
       appBar: AppBar(
         title: Text(isEdit ? 'Edit Tugas' : 'Tambah Tugas',
             style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
         actions: isEdit
             ? [
                 IconButton(
@@ -250,7 +250,7 @@ Future<void> _loadUser() async {
               ElevatedButton(
                 onPressed: _saveTask,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
+                  backgroundColor: Colors.lightBlue,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -271,7 +271,7 @@ Future<void> _loadUser() async {
         },
         label: const Text('Scan Tugas', style: TextStyle(fontSize: 16, color: Colors.white)),
         icon: const Icon(Icons.document_scanner, color: Colors.white),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
     );
   }

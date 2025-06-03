@@ -132,7 +132,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Kalender Mingguan', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Column(
         children: [
@@ -205,7 +205,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         leading: event.contains("Kuliah")
                             ? const Icon(Icons.school, color: Colors.blueAccent)
                             : const Icon(Icons.assignment,
-                                color: Colors.indigo),
+                                color: Colors.lightBlue),
                         title: Text(event),
                       );
                     },

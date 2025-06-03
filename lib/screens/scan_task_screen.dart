@@ -71,7 +71,7 @@ class _ScanTaskScreenState extends State<ScanTaskScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scan Tugas dari Kamera/Gambar', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

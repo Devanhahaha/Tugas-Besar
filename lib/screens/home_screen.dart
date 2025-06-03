@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'Student Task Manager',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue, // warna biru muda
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo[800]),
+                  color: Colors.lightBlue),
             ),
             const SizedBox(height: 4),
             const Text('Filter & urutkan tugas kamu di bawah ini:',
@@ -256,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.indigo,
+                                              color: Colors.lightBlue,
                                             ),
                                           ),
                                         ),
@@ -347,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (result == true && userId != null)
             await taskProvider.loadTasksByUser(userId!);
         },
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.lightBlue,
         icon: const Icon(Icons.add, color: Colors.white),
         label:
             const Text('Tambah Tugas', style: TextStyle(color: Colors.white)),
