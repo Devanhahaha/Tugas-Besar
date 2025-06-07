@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:tugas_besar_mobile2/screens/ocr_preview_screen.dart';
 import 'package:tugas_besar_mobile2/utils/ocr_services.dart';
+import 'package:tugas_besar_mobile2/providers/ocr_provider.dart';
 
 class ScanTaskScreen extends StatefulWidget {
   const ScanTaskScreen({super.key});
@@ -25,7 +26,9 @@ class _ScanTaskScreenState extends State<ScanTaskScreen> {
         _scannedText = '';
         _loading = true;
       });
+
       final text = await OCRService.scanTextFromImage(_image!);
+
       setState(() {
         _scannedText = text;
         _loading = false;
@@ -33,36 +36,62 @@ class _ScanTaskScreenState extends State<ScanTaskScreen> {
     }
   }
 
-  Map<String, String> parseScannedText(String text) {
+  Map<String, dynamic> parseScannedText(String text) {
     final lines = text.split('\n');
     final result = <String, String>{};
+    final garbage = <String>[];
+
+    final garbageKeywords = [
+      'jangan telat',
+      'kena denda',
+      'terlambat',
+      'dihukum',
+      'hukumannya',
+      'kalau telat',
+      'telat kena',
+    ];
 
     for (var line in lines) {
-      if (line.toLowerCase().contains('nama')) {
+      final lower = line.toLowerCase();
+
+      if (garbageKeywords.any((word) => lower.contains(word))) {
+        garbage.add(line);
+        continue;
+      }
+
+      if (lower.contains('nama')) {
         result['namaTugas'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('kuliah')) {
+      } else if (lower.contains('kuliah')) {
         result['mataKuliah'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('deadline')) {
+      } else if (lower.contains('deadline')) {
         result['deadline'] = line.split(':').last.trim();
-      } else if (line.toLowerCase().contains('catatan')) {
+      } else if (lower.contains('catatan')) {
         result['catatan'] = line.split(':').last.trim();
       }
     }
 
-    return result;
+    return {
+      'data': result,
+      'garbage': garbage,
+    };
   }
 
   void _useScannedText() {
     final parsed = parseScannedText(_scannedText);
 
+    final ocrProvider = context.read<OCRProvider>();
+    ocrProvider.setExtractedData(parsed['data']);
+    ocrProvider.setGarbageText(parsed['garbage']);
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => OCRPreviewScreen(extractedData: parsed),
+        builder: (_) => const OCRPreviewScreen(extractedData: {},),
       ),
     ).then((result) {
-      if (result == true)
-        Navigator.pop(context, true); // ini akan trigger _loadTasks() di Home
+      if (result == true) {
+        Navigator.pop(context, true);
+      }
     });
   }
 
@@ -70,13 +99,13 @@ class _ScanTaskScreenState extends State<ScanTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan Tugas dari Kamera/Gambar', style: TextStyle(color: Colors.white)),
+        title: const Text('Scan Tugas dari Kamera/Gambar',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          // Tambahkan ini
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

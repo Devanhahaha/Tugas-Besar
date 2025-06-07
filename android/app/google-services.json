@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "617712857594",
+    "project_id": "mobile2-57dcf",
+    "storage_bucket": "mobile2-57dcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617712857594:android:0010fe07f018499494b443",
+        "android_client_info": {
+          "package_name": "com.example.tugas_besar_mobile2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617712857594-lrm0a958m8uriifsd3673646fad4066e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tugas_besar_mobile2",
+            "certificate_hash": "fe19b6da807ea8525dfa82f50fa449e93c496899"
+          }
+        },
+        {
+          "client_id": "617712857594-ku8mh0ns17c6m091rq7s388rj41vdsbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsgvA1CF583ewFBaQTY9wJcxd7Czp3lfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617712857594-ku8mh0ns17c6m091rq7s388rj41vdsbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

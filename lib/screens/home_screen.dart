@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas_besar_mobile2/models/task_model.dart';
 import 'package:tugas_besar_mobile2/providers/task_provider.dart';
+import 'package:tugas_besar_mobile2/providers/user_provider.dart';
 import 'package:tugas_besar_mobile2/screens/add_edit_task_screen.dart';
 import 'package:tugas_besar_mobile2/screens/calender_screen.dart';
 import 'package:tugas_besar_mobile2/screens/complete_tasks_screen.dart';
@@ -29,7 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUser();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.loadUser().then((_) {
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      if (userProvider.userId != null) {
+        taskProvider.loadTasksByUser(userProvider.userId!);
+      }
+    });
   }
 
   Future<void> _loadUser() async {
@@ -45,6 +52,25 @@ class _HomeScreenState extends State<HomeScreen> {
       // provider
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
       await taskProvider.loadTasksByUser(userId!);
+    }
+  }
+
+  Future<void> _updateUsername(String newUsername) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_data');
+
+    if (userJson != null) {
+      final userMap = jsonDecode(userJson);
+      userMap['username'] = newUsername;
+
+      await prefs.setString('user_data', jsonEncode(userMap));
+      setState(() {
+        username = newUsername;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username berhasil diperbarui')),
+      );
     }
   }
 
@@ -164,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Halo, ${username ?? 'Mahasiswa'} 👋',
+              'Halo, ${Provider.of<UserProvider>(context).username ?? 'Mahasiswa'} 👋',
               style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -206,6 +232,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(sortAsc ? Icons.arrow_upward : Icons.arrow_downward),
                   onPressed: () => setState(() => sortAsc = !sortAsc),
                 ),
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  onPressed: () async {
+                    await _updateUsername('Mahasiswa Keren');
+                  },
+                )
               ],
             ),
             const SizedBox(height: 12),

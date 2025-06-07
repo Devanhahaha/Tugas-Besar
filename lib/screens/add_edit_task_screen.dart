@@ -71,18 +71,18 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
     }
   }
 
- Users? loggedInUser;
+  Users? loggedInUser;
 
-Future<void> _loadUser() async {
-  final prefs = await SharedPreferences.getInstance();
-  String? userJson = prefs.getString('user_data');
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? userJson = prefs.getString('user_data');
 
-  if (userJson != null) {
-    setState(() {
-      loggedInUser = Users.fromJson(userJson); 
-    });
+    if (userJson != null) {
+      setState(() {
+        loggedInUser = Users.fromJson(userJson);
+      });
+    }
   }
-}
 
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
@@ -114,58 +114,56 @@ Future<void> _loadUser() async {
   }
 
   Future<void> _saveTask() async {
-  if (_formKey.currentState!.validate() && _selectedDateTime != null) {
-   final userId = widget.task?.user_id ?? loggedInUser?.id ?? 0;
-    print('user : ${userId}');
-    final task = Task(
-      id: widget.task?.id,
-      tugas: _titleController.text,
-      matakuliah: _courseController.text,
-      deadline: _selectedDateTime!,
-      notes: _notesController.text,
-      user_id: userId,
-      isDone: widget.task?.isDone ?? false,
+    if (_formKey.currentState!.validate() && _selectedDateTime != null) {
+      final userId = widget.task?.user_id ?? loggedInUser?.id ?? 0;
+      print('user : ${userId}');
+      final task = Task(
+        id: widget.task?.id,
+        tugas: _titleController.text,
+        matakuliah: _courseController.text,
+        deadline: _selectedDateTime!,
+        notes: _notesController.text,
+        user_id: userId,
+        isDone: widget.task?.isDone ?? false,
+      );
 
-    );
+      if (isEdit) {
+        await LocalDB.instance.updateTask(task);
+        await NotificationService.cancelTaskNotifications(task.id!);
+        await NotificationService.scheduleTaskReminder(
+          id: task.id!,
+          tugas: task.tugas,
+          deadline: task.deadline,
+        );
+        await NotificationService.scheduleTaskReminderr(
+          id: task.id!,
+          tugas: task.tugas,
+          deadline: task.deadline,
+        );
+      } else {
+        final newId = await LocalDB.instance.insertTask(task);
+        await NotificationService.scheduleTaskReminder(
+          id: newId,
+          tugas: task.tugas,
+          deadline: task.deadline,
+        );
+        await NotificationService.scheduleTaskReminderr(
+          id: newId,
+          tugas: task.tugas,
+          deadline: task.deadline,
+        );
+      }
 
-    if (isEdit) {
-      await LocalDB.instance.updateTask(task);
-      await NotificationService.cancelTaskNotifications(task.id!);
-      await NotificationService.scheduleTaskReminder(
-        id: task.id!,
-        tugas: task.tugas,
-        deadline: task.deadline,
-      );
-      await NotificationService.scheduleTaskReminderr(
-        id: task.id!,
-        tugas: task.tugas,
-        deadline: task.deadline,
-      );
-    } else {
-      final newId = await LocalDB.instance.insertTask(task);
-      await NotificationService.scheduleTaskReminder(
-        id: newId,
-        tugas: task.tugas,
-        deadline: task.deadline,
-      );
-      await NotificationService.scheduleTaskReminderr(
-        id: newId,
-        tugas: task.tugas,
-        deadline: task.deadline,
-      );
-    }
-
-    // Balik langsung ke halaman Home
-    if (context.mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false,
-      );
+      // Balik langsung ke halaman Home
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
+        );
+      }
     }
   }
-}
-
 
   Future<void> _deleteTask() async {
     if (isEdit && widget.task?.id != null) {
@@ -177,7 +175,7 @@ Future<void> _loadUser() async {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false, // Hapus semua rute sebelumnya
+          (route) => false,
         );
       }
     }
@@ -269,7 +267,8 @@ Future<void> _loadUser() async {
             MaterialPageRoute(builder: (_) => const LiveScanTaskScreen()),
           );
         },
-        label: const Text('Scan Tugas', style: TextStyle(fontSize: 16, color: Colors.white)),
+        label: const Text('Scan Tugas',
+            style: TextStyle(fontSize: 16, color: Colors.white)),
         icon: const Icon(Icons.document_scanner, color: Colors.white),
         backgroundColor: Colors.lightBlue,
       ),

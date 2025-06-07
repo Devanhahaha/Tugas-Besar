@@ -131,7 +131,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kalender Mingguan', style: TextStyle(color: Colors.white)),
+        title: const Text('Kalender Mingguan',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.lightBlue,
       ),
       body: Column(

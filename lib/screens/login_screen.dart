@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar_mobile2/components/clip_path.dart';
+import 'package:tugas_besar_mobile2/components/square_tile.dart';
+import 'package:tugas_besar_mobile2/screens/home_screen.dart';
 import 'package:tugas_besar_mobile2/screens/loginForm_screen.dart';
 import 'package:tugas_besar_mobile2/screens/registerForm_screen.dart';
+import 'package:tugas_besar_mobile2/services/auth_services.dart';
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -159,6 +164,36 @@ class LoginScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  AuthServices().signInWithGoogle(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Image.asset(
+                                      'assets/images/google.jpg',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Sign in with Google',
+                                      style: TextStyle(color: Colors.lightBlue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -184,20 +219,4 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class ClipPathClass extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 60);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 60);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
